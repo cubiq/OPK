@@ -1,12 +1,12 @@
 """
 ==========================
-  ██████  ██████  ██   ██ 
- ██    ██ ██   ██ ██  ██  
- ██    ██ ██████  █████   
- ██    ██ ██      ██  ██  
-  ██████  ██      ██   ██ 
+  ██████  ██████  ██   ██
+ ██    ██ ██   ██ ██  ██
+ ██    ██ ██████  █████
+ ██    ██ ██      ██  ██
+  ██████  ██      ██   ██
 ==========================
- Open Programmatic Keycap 
+ Open Programmatic Keycap
 ==========================
 
 OPK is a spherical top keycap profile developed in CadQuery
@@ -16,7 +16,7 @@ spherical top keycaps.
 
 !!! The profile is still highly experimental and very alpha stage. ¡¡¡
 
-If you use the code please give credit, if you do modifications consider 
+If you use the code please give credit, if you do modifications consider
 releasing them back to the public under a permissive open source license.
 
 Copyright (c) 2022 Matteo "Matt3o" Spinelli
@@ -55,7 +55,7 @@ def keycap(
     ty = by - top_diff
 
     # if spacebar make the top less round-y
-    tension = .4 if convex else 1 
+    tension = .4 if convex else 1
 
     # Three-section loft of rounded rectangles. Can't find a better way to do variable fillet
     base = (
@@ -92,7 +92,7 @@ def keycap(
                     )
         .loft()
     )
-    
+
     # Create a body that will be carved from the main shape to create the shape
     if convex:
         tool = (
@@ -129,10 +129,10 @@ def keycap(
 
     #show_object(tool, options={'alpha': 0.4})
     keycap = keycap - tool
-    
+
     # Top edge fillet
     keycap = keycap.edges(">Z").fillet(0.5)
-    
+
     # Since the shell() function is not able to deal with complex shapes
     # we need to subtract a smaller keycap from the main shape
     shell = (
@@ -210,8 +210,12 @@ def keycap(
 
     return keycap
 
-cap = keycap()
-show_object(cap, name="keycap", options={"alpha": 0})
+def main():
+  cap = keycap()
+#  show_object(cap, name="keycap", options={"alpha": 0})
 
-#exporters.export(cap, 'keycap.stl', tolerance=0.001, angularTolerance=0.05)
-#exporters.export(cap, 'keycap.step')
+  exporters.export(cap, 'keycap.stl', tolerance=0.001, angularTolerance=0.05)
+  exporters.export(cap, 'keycap.step')
+
+if __name__ == "__main__":
+    main()
