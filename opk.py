@@ -1,12 +1,12 @@
 """
 ==========================
-  ██████  ██████  ██   ██ 
- ██    ██ ██   ██ ██  ██  
- ██    ██ ██████  █████   
- ██    ██ ██      ██  ██  
-  ██████  ██      ██   ██ 
+  ██████  ██████  ██   ██
+ ██    ██ ██   ██ ██  ██
+ ██    ██ ██████  █████
+ ██    ██ ██      ██  ██
+  ██████  ██      ██   ██
 ==========================
- Open Programmatic Keycap 
+ Open Programmatic Keycap
 ==========================
 
 OPK is a spherical top keycap profile developed in CadQuery
@@ -16,7 +16,7 @@ spherical top keycaps.
 
 !!! The profile is still highly experimental and very alpha stage. ¡¡¡
 
-If you use the code please give credit, if you do modifications consider 
+If you use the code please give credit, if you do modifications consider
 releasing them back to the public under a permissive open source license.
 
 Copyright (c) 2022 Matteo "Matt3o" Spinelli
@@ -60,7 +60,7 @@ def keycap(
     ty = by - top_diff
 
     # if spacebar make the top less round-y
-    tension = .4 if convex else 1 
+    tension = .4 if convex else 1
 
     # Three-section loft of rounded rectangles. Can't find a better way to do variable fillet
     base = (
@@ -98,7 +98,7 @@ def keycap(
                     )
         .loft()
     )
-    
+
     # Create a body that will be carved from the main shape to create the shape
     if convex:
         tool = (
@@ -135,7 +135,7 @@ def keycap(
 
     #show_object(tool, options={'alpha': 0.4})
     keycap = keycap - tool
-    
+
     # Top edge fillet
     keycap = keycap.edges(">Z").fillet(0.5)
 
