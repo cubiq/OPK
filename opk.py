@@ -90,6 +90,9 @@ def keycap(
     )
 
     # Main shape
+    lang = angle
+    if angle < 0:
+        lang = -angle
     keycap = (
         cq.Workplane("XY")
         .placeSketch(base,
@@ -190,6 +193,9 @@ def keycap(
         .faces(">Z[1]").edges("|X or |Y")
         .chamfer(0.2)
     )
+
+    if angle < 0 :
+        keycap = keycap.rotateAboutCenter((0,0,1),180.0)
 
     # Add the legend if present
     if legend:
