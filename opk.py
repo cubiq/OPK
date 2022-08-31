@@ -41,15 +41,15 @@ def keycap(
     convex: bool = False,       # Is this a spacebar?
     legend: str = "",           # Legend
     font: str = "sans serif",
-    fontsize: float = 10
+    fontsize: float = 10,
+    sep: float = 19.05          # separation between keys
 ):
-
     top_diff = base - top
 
     curv = min(curv, 1.9)
 
-    bx = 19.05 * unitX - (19.05 - base)
-    by = 19.05 * unitY - (19.05 - base)
+    bx = sep * unitX - (sep - base)
+    by = sep * unitY - (sep - base)
 
     tx = bx - top_diff
     ty = by - top_diff
@@ -150,10 +150,10 @@ def keycap(
     if unitX < 2:
         stem_pts = [(0,0)]
     elif unitX < 3:
-        dist = 2.25 / 2 * 19.05 - 19.05 / 2
+        dist = 2.25 / 2 * sep - sep / 2
         stem_pts = [(0,0), (dist, 0), (-dist,0)]
     else:
-        dist = unitX / 2 * 19.05 - 19.05 / 2
+        dist = unitX / 2 * sep - sep / 2
         stem_pts = [(0,0), (dist, 0), (-dist,0)]
 
     stem1 = (
