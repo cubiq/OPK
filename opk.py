@@ -84,11 +84,14 @@ def keycap(
     )
 
     # Main shape
+    lang = angle
+    if angle < 0:
+        lang = -angle
     keycap = (
         cq.Workplane("XY")
         .placeSketch(base,
                     mid.moved(cq.Location(cq.Vector(0, 0, height/4))),
-                    top.moved(cq.Location(cq.Vector(-tx/2, -ty/2, height), (1,0,0), angle))
+                    top.moved(cq.Location(cq.Vector(-tx/2, -ty/2, height), (1,0,0), lang))
                     )
         .loft()
     )
@@ -96,7 +99,7 @@ def keycap(
     # Create a body that will be carved from the main shape to create the shape
     if convex:
         tool = (
-            cq.Workplane("YZ").transformed(offset=cq.Vector(0, height-2, -bx/2), rotate=cq.Vector(0, 0, angle))
+            cq.Workplane("YZ").transformed(offset=cq.Vector(0, height-2, -bx/2), rotate=cq.Vector(0, 0, lang))
             .moveTo(-by/2, -1)
             .threePointArc((0, 2), (by/2, -1))
             .lineTo(by/2, 10)
@@ -106,7 +109,7 @@ def keycap(
         )
     else:
         tool = (
-            cq.Workplane("YZ").transformed(offset=cq.Vector(0, height+1.1, bx/2), rotate=cq.Vector(0, 0, angle))
+            cq.Workplane("YZ").transformed(offset=cq.Vector(0, height+1.1, bx/2), rotate=cq.Vector(0, 0, lang))
             .moveTo(-by/2+2,0)
             .threePointArc((0, min(-0.1, -depth+1)), (by/2-2, 0))
             .lineTo(by/2-2, 10)
@@ -138,7 +141,7 @@ def keycap(
     shell = (
         cq.Workplane("XY").rect(bx-thickness*2, by-thickness*2)
         .workplane(offset=height/5).rect(bx-thickness*2.3, by-thickness*2.3)
-        .workplane().transformed(offset=cq.Vector(0, 0, height-height/5-3), rotate=cq.Vector(angle, 0, 0)).rect(tx-thickness*2, ty-thickness*2)
+        .workplane().transformed(offset=cq.Vector(0, 0, height-height/5-3), rotate=cq.Vector(lang, 0, 0)).rect(tx-thickness*2, ty-thickness*2)
         .loft()
     )
     keycap = keycap - shell
@@ -184,6 +187,9 @@ def keycap(
         .faces(">Z[1]").edges("|X or |Y")
         .chamfer(0.2)
     )
+
+    if angle < 0 :
+        keycap = keycap.rotateAboutCenter((0,0,1),180.0)
 
     # Add the legend if present
     if legend:
