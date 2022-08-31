@@ -8,7 +8,7 @@ It's especially suited for creating high/medium profile spherical top keycaps.
 
 ## Please contribute!
 
-I'm new to CadQuery (CQ), Ptyhon and code based CAD in general. There's a lot of guesswork and fumbling around to get to this point, any help is very much appreciated. 
+I'm new to CadQuery (CQ), Ptyhon and code based CAD in general. There's a lot of guesswork and fumbling around to get to this point, any help is very much appreciated.
 
 ## Usage
 
@@ -92,5 +92,9 @@ The code includes an example to use a DXF drawing as legend (check the comments 
 - add support for logos and graphical legends
 - add reinforcement for big keys
 - better legend centering
+- secondary, tertiary, quaternary legends
+- side printed legends
+- add alternative stems
+- allow reduced height of keycap for non 19.xx spacing
 - clean up the code
 - automatic export script of all needed keycap for a full keyboard
