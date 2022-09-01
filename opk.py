@@ -90,9 +90,6 @@ def keycap(
     )
 
     # Main shape
-    lang = angle
-    if angle < 0:
-        lang = -angle
     keycap = (
         cq.Workplane("XY")
         .placeSketch(base,
