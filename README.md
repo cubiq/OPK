@@ -12,9 +12,9 @@ I'm new to CadQuery (CQ), Ptyhon and code based CAD in general. There's a lot of
 
 ## Usage
 
-If you are new to CQ, the easiest is to download a [CQ-Editor](https://github.com/CadQuery/CQ-editor) pre-built package (I use the latest development release), load the `opk.py` file and hit **Render**!
+If you are new to CQ, the easiest is to download a [CQ-Editor](https://github.com/CadQuery/CQ-editor) pre-built package (I use the latest development release), load the `keycap.py` file and hit **Render**!
 
-The main ``keycap`` function has sane defaults and parameters are sufficiently commented.
+The main ``keycap`` function in the ``opk.py`` file has sane defaults and parameters are sufficiently commented.
 
 The *export* directory includes a few examples in both STL and STEP format.
 
