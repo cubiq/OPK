@@ -102,7 +102,7 @@ def keycap(
     # Create a body that will be carved from the main shape to create the shape
     if convex:
         tool = (
-            cq.Workplane("YZ").transformed(offset=cq.Vector(0, height-2, -bx/2), rotate=cq.Vector(0, 0, angle))
+            cq.Workplane("YZ").transformed(offset=cq.Vector(0, height-2.1, -bx/2), rotate=cq.Vector(0, 0, angle))
             .moveTo(-by/2, -1)
             .threePointArc((0, 2), (by/2, -1))
             .lineTo(by/2, 10)
