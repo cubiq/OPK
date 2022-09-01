@@ -25,6 +25,11 @@ https://matt3o.com
 
 import cadquery as cq
 from cadquery import exporters
+from pprint import pprint
+# Prevent error when running from cli
+if 'show_object' not in globals():
+    def show_object(*args, **kwargs):
+        pass
 
 def keycap(
     unitX: float = 1,           # keycap size in unit. Standard sizes: 1, 1.25, 1.5, ...
@@ -40,7 +45,7 @@ def keycap(
     thickness: float = 1.5,     # Keycap sides thickness
     convex: bool = False,       # Is this a spacebar?
     legend: str = "",           # Legend
-    font: str = "sans serif",
+    font: str = "sans-serif",
     fontsize: float = 10
 ):
 
@@ -191,6 +196,10 @@ def keycap(
             cq.Workplane("XY").transformed(offset=cq.Vector(0, 0, height), rotate=cq.Vector(angle, 0, 0))
             .text(legend, fontsize, -2, font=font, halign="center")
         )
+        bb = legend.val().BoundingBox()
+        # try to center the legend horizontally
+        legend = legend.translate((-bb.center.x, 0, 0))
+
         keycap = keycap - legend
         legend = legend - tool
         #show_object(legend, name="legend", options={'color': 'blue', 'alpha': 0})
