@@ -144,7 +144,7 @@ def keycap(
     shell = (
         cq.Workplane("XY").rect(bx-thickness*2, by-thickness*2)
         .workplane(offset=height/5).rect(bx-thickness*2.3, by-thickness*2.3)
-        .workplane().transformed(offset=cq.Vector(0, 0, height-height/5-3), rotate=cq.Vector(angle, 0, 0)).rect(tx-thickness*2, ty-thickness*2)
+        .workplane().transformed(offset=cq.Vector(0, 0, height-height/5-4), rotate=cq.Vector(angle, 0, 0)).rect(tx-thickness*2, ty-thickness*2)
         .loft()
     )
     keycap = keycap - shell
@@ -194,15 +194,18 @@ def keycap(
     # Add the legend if present
     if legend:
         legend = (
-            cq.Workplane("XY").transformed(offset=cq.Vector(0, 0, height), rotate=cq.Vector(angle, 0, 0))
-            .text(legend, fontsize, -2, font=font, halign="center")
+            cq.Workplane("XY").transformed(offset=cq.Vector(0, 0, height+1), rotate=cq.Vector(angle, 0, 0))
+            .text(legend, fontsize, -4, font=font, halign="center")
         )
         bb = legend.val().BoundingBox()
         # try to center the legend horizontally
         legend = legend.translate((-bb.center.x, 0, 0))
 
+        legend = legend - keycap
+        legend = legend.translate((0,0,-1))
         keycap = keycap - legend
         legend = legend - tool      # this can be used to export the legend for 2 colors 3D printing
+
         #show_object(legend, name="legend", options={'color': 'blue', 'alpha': 0})
 
     """
