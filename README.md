@@ -98,4 +98,3 @@ The code includes an example to use a DXF drawing as legend (check the comments 
 - online editor
 - add secondary/tertiary legends
 - add support for stems other than cherry
-- fix negative angle top

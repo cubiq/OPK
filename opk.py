@@ -25,7 +25,7 @@ https://matt3o.com
 
 import cadquery as cq
 from cadquery import exporters
-from pprint import pprint
+
 # Prevent error when running from cli
 if 'show_object' not in globals():
     def show_object(*args, **kwargs):
@@ -39,7 +39,7 @@ def keycap(
     curv: float = 1.3,          # Top side curvature. Higher value makes the top rounder (use small increments)
     bFillet: float = 0.5,       # Fillet at the base
     tFillet: float = 4,         # Fillet at the top
-    height: float = 12,         # Height of the keycap before cutting the scoop (final height is lower)
+    height: float = 13,         # Height of the keycap before cutting the scoop (final height is lower)
     angle: float = 7,           # Angle of the top surface
     depth: float = 2.5,         # Scoop depth
     thickness: float = 1.5,     # Keycap sides thickness
@@ -86,6 +86,7 @@ def keycap(
         .assemble()
         .vertices()
         .fillet(tFillet)
+        .moved(cq.Location(cq.Vector(-tx/2, -ty/2, 0)))
     )
 
     # Main shape
@@ -93,7 +94,7 @@ def keycap(
         cq.Workplane("XY")
         .placeSketch(base,
                     mid.moved(cq.Location(cq.Vector(0, 0, height/4))),
-                    top.moved(cq.Location(cq.Vector(-tx/2, -ty/2, height), (1,0,0), angle))
+                    top.moved(cq.Location(cq.Vector(0, 0, height), (1,0,0), angle))
                     )
         .loft()
     )
@@ -137,7 +138,7 @@ def keycap(
     
     # Top edge fillet
     keycap = keycap.edges(">Z").fillet(0.5)
-    
+
     # Since the shell() function is not able to deal with complex shapes
     # we need to subtract a smaller keycap from the main shape
     shell = (
@@ -201,7 +202,7 @@ def keycap(
         legend = legend.translate((-bb.center.x, 0, 0))
 
         keycap = keycap - legend
-        legend = legend - tool
+        legend = legend - tool      # this can be used to export the legend for 2 colors 3D printing
         #show_object(legend, name="legend", options={'color': 'blue', 'alpha': 0})
 
     """
