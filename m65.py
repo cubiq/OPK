@@ -39,7 +39,7 @@ for row,ll,ff in zip(leg,lay,fonts):
             convex=True
         scoop = 2.5
         if k in ['f','F','j','J']:
-            scoop = 3.5
+            scoop = 2.5*1.2
         m65.add(keycap(legend=k,
                        angle=angles[i],
                        font=f,
@@ -49,5 +49,5 @@ for row,ll,ff in zip(leg,lay,fonts):
                 name="k{}{}".format(i,j),
                 loc=cq.Location(cq.Vector(x,y,0)))
         x += w
+#cq.exporters.export(m65.toCompound(), 'keycaps.stl', tolerance=0.001, angularTolerance=0.05)
 show_object(m65, name="m65", options={"alpha": 0})
-cq.exporters.export(m65.toCompound(), 'keycaps.stl', tolerance=0.001, angularTolerance=0.05)
