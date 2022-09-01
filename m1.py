@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-
-
 import cadquery as cq
 from opk import *
 

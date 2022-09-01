@@ -18,24 +18,27 @@ fonts=[
         ["Noto Sans"]*13,
         ["DejaVu Sans Mono"]+["Font Awesome 6 Brands"]+["Noto Sans"]*11
         ]
-s=19.05
+sx=19.05
+sy=19.05
 m65 = cq.Assembly()
-x = 0
+y = 0
 i = -1
 j = -1
 angles=[9,8.5,-6,-7,0]
 
 for row,ll,ff in zip(leg,lay,fonts):
-    x -= s
+    y -= sy
     i += 1
-    y = 0
+    x = 0
     for k,l,f in zip(row,ll,ff):
         print(k,l)
-        y += l*s
+        w = l*sx/2.0
         j += 1
+        x += w
         convex=False
         if k == '':
             convex=True
-        m65.add(keycap(legend=k,angle=angles[i],font=f,convex=convex),name="k{}{}".format(i,j),loc=cq.Location(cq.Vector(y,x,0)))
-show_object(m65, name="m65", options={"alpha": 0})
+        m65.add(keycap(legend=k,angle=angles[i],font=f,convex=convex),name="k{}{}".format(i,j),loc=cq.Location(cq.Vector(x,y,0)))
+        x += w
 cq.exporters.export(m65.toCompound(), 'keycaps.stl', tolerance=0.001, angularTolerance=0.05)
+#show_object(m65, name="m65", options={"alpha": 0})
