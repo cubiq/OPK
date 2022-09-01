@@ -91,10 +91,9 @@ The code includes an example to use a DXF drawing as legend (check the comments 
 - add 2U pos-like stabilizers
 - add support for logos and graphical legends
 - add reinforcement for big keys
-- better legend centering
-- clean up the code
 - automatic export script of all needed keycap for a full keyboard
 - output files already supported for 3D printing
 - online editor
 - add secondary/tertiary legends
 - add support for stems other than cherry
+- clean up the code

@@ -93,7 +93,7 @@ def keycap(
     keycap = (
         cq.Workplane("XY")
         .placeSketch(base,
-                    mid.moved(cq.Location(cq.Vector(0, 0, height/4))),
+                    mid.moved(cq.Location(cq.Vector(0, 0, height/4), (1,0,0), angle/4)),
                     top.moved(cq.Location(cq.Vector(0, 0, height), (1,0,0), angle))
                     )
         .loft()
@@ -112,7 +112,7 @@ def keycap(
         )
     else:
         tool = (
-            cq.Workplane("YZ").transformed(offset=cq.Vector(0, height+1.1, bx/2), rotate=cq.Vector(0, 0, angle))
+            cq.Workplane("YZ").transformed(offset=cq.Vector(0, height+1, bx/2), rotate=cq.Vector(0, 0, angle))
             .moveTo(-by/2+2,0)
             .threePointArc((0, min(-0.1, -depth+1)), (by/2-2, 0))
             .lineTo(by/2-2, 10)
