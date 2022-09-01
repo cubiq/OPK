@@ -37,7 +37,7 @@ for row,ll,ff in zip(leg,lay,fonts):
             convex=True
         scoop = 2.5
         if k in ['f','F','j','J']:
-            scoop = 2.5*1.05
+            scoop = 2.5*1.2
         planck.add(keycap(legend=k,
                        angle=angles[i],
                        font=f,
