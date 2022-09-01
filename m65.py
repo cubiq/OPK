@@ -10,7 +10,6 @@ leg = [["⎋","1","2","3","4","5","6","7","8","9","0","-","⌫"],
 ["⇧","\\","z","x","c","v","b","n","m",",",".","↑","/"],
 ["⎈","","⇓","⎇","⇑","","","","⎇","⇧","←","↓","→"]]
 lay= [[1]*13 , [1]*13,[1]*13,[1]*13,[1]*13]
-rows=len(leg)
 fonts=[
         ["DejaVu Sans Mono"]+["Noto Sans"]*11+["DejaVu Sans Mono"],
         ["Noto Sans"]*13,
@@ -38,7 +37,17 @@ for row,ll,ff in zip(leg,lay,fonts):
         convex=False
         if k == '':
             convex=True
-        m65.add(keycap(legend=k,angle=angles[i],font=f,convex=convex),name="k{}{}".format(i,j),loc=cq.Location(cq.Vector(x,y,0)))
+        scoop = 2.5
+        if k in ['f','F','j','J']:
+            scoop = 3.5
+        m65.add(keycap(legend=k,
+                       angle=angles[i],
+                       font=f,
+                       convex=convex,
+                       depth = scoop,
+                       unitX=l),
+                name="k{}{}".format(i,j),
+                loc=cq.Location(cq.Vector(x,y,0)))
         x += w
+show_object(m65, name="m65", options={"alpha": 0})
 cq.exporters.export(m65.toCompound(), 'keycaps.stl', tolerance=0.001, angularTolerance=0.05)
-#show_object(m65, name="m65", options={"alpha": 0})
