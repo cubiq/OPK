@@ -191,9 +191,6 @@ def keycap(
         .chamfer(0.2)
     )
 
-    if angle < 0 :
-        keycap = keycap.rotateAboutCenter((0,0,1),180.0)
-
     # Add the legend if present
     if legend:
         legend = (
