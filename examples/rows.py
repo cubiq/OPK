@@ -53,4 +53,4 @@ for row,ll,ff in zip(leg,lay,fonts):
                 loc=cq.Location(cq.Vector(x,y,0)))
         x += w
 cq.exporters.export(rows.toCompound(), 'keycaps.stl', tolerance=0.001, angularTolerance=0.05)
-#show_object(rows, name="rows", options={"alpha": 0})
+show_object(rows, name="rows", options={"alpha": 0})
