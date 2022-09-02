@@ -27,9 +27,9 @@ import cadquery as cq
 from cadquery import exporters
 
 # Prevent error when running from cli
-#if 'show_object' not in globals():
-#    def show_object(*args, **kwargs):
-#        pass
+if 'show_object' not in globals():
+    def show_object(*args, **kwargs):
+        pass
 
 def keycap(
     unitX: float = 1,           # keycap size in unit. Standard sizes: 1, 1.25, 1.5, ...

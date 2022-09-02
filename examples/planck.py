@@ -48,4 +48,4 @@ for row,ll,ff in zip(leg,lay,fonts):
                 loc=cq.Location(cq.Vector(x,y,0)))
         x += w
 cq.exporters.export(planck.toCompound(), 'keycaps.stl', tolerance=0.001, angularTolerance=0.05)
-show_object(planck, name="pre", options={"alpha": 0})
+#show_object(planck, name="pre", options={"alpha": 0})
