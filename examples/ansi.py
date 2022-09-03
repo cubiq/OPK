@@ -2,10 +2,10 @@
 
 import cadquery as cq
 from opk import *
-leg = [["⎋","1","2","3","4","5","6","7","8","9","0","-","+","⌫"],
-["↹","q","w","e","r","t","y","u","i","o","p","[","]","\\"],
-["Caps","a","s","d","f","g","h","j","k","l",";","'","enter"],
-["⇧","z","x","c","v","b","n","m",",",".","/","shift"],
+leg = [["⎋","!\n1","\"\n2","£\n3","$\n4","%\n5","^\n6","&\n7","*\n8","(\n9",")\n0","_\n-","=\n+","⌫"],
+["↹","q","w","e","r","t","y","u","i","o","p","{\n[","}\n]","|\n\\"],
+["Caps","a","s","d","f","g","h","j","k","l",":\n;","@\n'","enter"],
+["⇧","z","x","c","v","b","n","m","<\n,",">\n.","?\n/","⇧"],
 ["⎈","","Alt","","Alt","Fn","Menu","Ctrl"]]
 lay= [[1]*13+[2],
       [1.5]+[1]*12+[1.5],
@@ -13,11 +13,11 @@ lay= [[1]*13+[2],
       [2.25]+[1]*10+[2.75],
       [1.25,1.25,1.25,6.25,1.25,1.25,1.25,1.25]]
 fonts=[
-        ["DejaVu Sans Mono"]+["Noto Sans"]*13,
-        ["DejaVu Sans Mono"]+["Noto Sans"]*13,
-        ["DejaVu Sans Mono"]+["Noto Sans"]*12,
-        ["DejaVu Sans Mono"]+["Noto Sans"]*10+["DejaVu Sans Mono"],
-        ["DejaVu Sans Mono"]+["Font Awesome 6 Brands"]+["Noto Sans"]*6
+        ["DejaVu Sans Mono"]*14,
+        ["DejaVu Sans Mono"]*14,
+        ["DejaVu Sans Mono"]*13,
+        ["DejaVu Sans Mono"]*12,
+        ["DejaVu Sans Mono"]+["Font Awesome 6 Brands"]+["DejaVu Sans Mono"]*6
         ]
 sx=19.05
 sy=19.05
@@ -26,6 +26,7 @@ y = 0
 i = -1
 j = -1
 angles=[9,8.5,-6,-7,0]
+vfs=[0,9,7,6,4.5,4.5]
 
 for row,ll,ff in zip(leg,lay,fonts):
     y -= sy
@@ -41,17 +42,23 @@ for row,ll,ff in zip(leg,lay,fonts):
             convex=True
         scoop = 2.5
         if k in ['f','F','j','J']:
-            scoop = 3.5
+            scoop = 2.5*1.2
+        fs=3
+        if len(k)<=5:
+            fs=vfs[len(k)]
+        if (len(k.split("\n"))==2):
+            fs = 4.5
         m65.add(keycap(legend=k,
                        angle=angles[i],
                        font=f,
                        convex=convex,
                        depth = scoop,
+                       fontsize = fs,
                        unitX=l),
                 name="k{}{}".format(i,j),
                 loc=cq.Location(cq.Vector(x,y,0))
                 )
         x += w
 
-cq.exporters.export(m65.toCompound(), 'keycaps.stl', tolerance=0.001, angularTolerance=0.05)
+#cq.exporters.export(m65.toCompound(), 'keycaps.stl', tolerance=0.001, angularTolerance=0.05)
 show_object(m65, name="legend", options={'color': 'red', 'alpha': 0})
