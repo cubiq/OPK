@@ -94,7 +94,7 @@ def keycap(
         .loft()
     )
 
-    # Create a body that will be carved from the main shape to create the shape
+    # Create a body that will be carved from the main shape to create the top scoop
     if convex:
         tool = (
             cq.Workplane("YZ").transformed(offset=cq.Vector(0, height-2.1, -bx/2), rotate=cq.Vector(0, 0, angle))
