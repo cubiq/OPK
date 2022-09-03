@@ -45,16 +45,18 @@ def keycap(
     thickness: float = 1.5,     # Keycap sides thickness
     convex: bool = False,       # Is this a spacebar?
     legend: str = "",           # Legend
-    font: str = "sans serif",
+    font: str = "sans-serif",
     fontsize: float = 10,
-    sep: float = 19.05          # separation between keys
+    sx: float = 19.05,          # distance between switches on x
+    sy: float = 19.05           # distance between switches on y
 ):
+
     top_diff = base - top
 
     curv = min(curv, 1.9)
 
-    bx = sep * unitX - (sep - base)
-    by = sep * unitY - (sep - base)
+    bx = sx * unitX - (sx - base)
+    by = sy * unitY - (sy - base)
 
     tx = bx - top_diff
     ty = by - top_diff
@@ -153,10 +155,10 @@ def keycap(
     if unitX < 2:
         stem_pts = [(0,0)]
     elif unitX < 3:
-        dist = 2.25 / 2 * sep - sep / 2
+        dist = 2.25 / 2 * sx - sx / 2
         stem_pts = [(0,0), (dist, 0), (-dist,0)]
     else:
-        dist = unitX / 2 * sep - sep / 2
+        dist = unitX / 2 * sx - sx / 2
         stem_pts = [(0,0), (dist, 0), (-dist,0)]
 
     stem1 = (
