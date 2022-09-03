@@ -1,12 +1,12 @@
 """
 ==========================
-  ██████  ██████  ██   ██
- ██    ██ ██   ██ ██  ██
- ██    ██ ██████  █████
- ██    ██ ██      ██  ██
-  ██████  ██      ██   ██
+  ██████  ██████  ██   ██ 
+ ██    ██ ██   ██ ██  ██  
+ ██    ██ ██████  █████   
+ ██    ██ ██      ██  ██  
+  ██████  ██      ██   ██ 
 ==========================
- Open Programmatic Keycap
+ Open Programmatic Keycap 
 ==========================
 
 OPK is a spherical top keycap profile developed in CadQuery
@@ -16,7 +16,7 @@ spherical top keycaps.
 
 !!! The profile is still highly experimental and very alpha stage. ¡¡¡
 
-If you use the code please give credit, if you do modifications consider
+If you use the code please give credit, if you do modifications consider 
 releasing them back to the public under a permissive open source license.
 
 Copyright (c) 2022 Matteo "Matt3o" Spinelli
@@ -25,11 +25,6 @@ https://matt3o.com
 
 import cadquery as cq
 from cadquery import exporters
-
-# Prevent error when running from cli
-#if 'show_object' not in globals():
-#    def show_object(*args, **kwargs):
-#        pass
 
 def keycap(
     unitX: float = 1,           # keycap size in unit. Standard sizes: 1, 1.25, 1.5, ...
@@ -41,28 +36,26 @@ def keycap(
     tFillet: float = 4,         # Fillet at the top
     height: float = 13,         # Height of the keycap before cutting the scoop (final height is lower)
     angle: float = 7,           # Angle of the top surface
-    depth: float = 2.5,         # Scoop depth
+    depth: float = 2.4,         # Scoop depth
     thickness: float = 1.5,     # Keycap sides thickness
     convex: bool = False,       # Is this a spacebar?
     legend: str = "",           # Legend
     font: str = "sans-serif",
-    fontsize: float = 10,
-    sx: float = 19.05,          # distance between switches on x
-    sy: float = 19.05           # distance between switches on y
+    fontsize: float = 10
 ):
 
     top_diff = base - top
 
     curv = min(curv, 1.9)
 
-    bx = sx * unitX - (sx - base)
-    by = sy * unitY - (sy - base)
+    bx = 19.05 * unitX - (19.05 - base)
+    by = 19.05 * unitY - (19.05 - base)
 
     tx = bx - top_diff
     ty = by - top_diff
 
     # if spacebar make the top less round-y
-    tension = .4 if convex else 1
+    tension = .4 if convex else 1 
 
     # Three-section loft of rounded rectangles. Can't find a better way to do variable fillet
     base = (
@@ -101,7 +94,7 @@ def keycap(
         .loft()
     )
 
-    # Create a body that will be carved from the main shape to create the shape
+    # Create a body that will be carved from the main shape to create the top scoop
     if convex:
         tool = (
             cq.Workplane("YZ").transformed(offset=cq.Vector(0, height-2.1, -bx/2), rotate=cq.Vector(0, 0, angle))
@@ -114,30 +107,30 @@ def keycap(
         )
     else:
         tool = (
-            cq.Workplane("YZ").transformed(offset=cq.Vector(0, height+1, bx/2), rotate=cq.Vector(0, 0, angle))
-            .moveTo(-by/2+2,0)
-            .threePointArc((0, min(-0.1, -depth+1)), (by/2-2, 0))
-            .lineTo(by/2-2, 10)
-            .lineTo(-by/2+2, 10)
+            cq.Workplane("YZ").transformed(offset=cq.Vector(0, height, bx/2), rotate=cq.Vector(0, 0, angle))
+            .moveTo(-by/2+2.4,0)
+            .threePointArc((0, min(-0.1, -depth+1)), (by/2-2.4, 0))
+            .lineTo(by/2, height)
+            .lineTo(-by/2, height)
             .close()
             .workplane(offset=-bx/2)
             .moveTo(-by/2, -1)
             .threePointArc((0, -depth), (by/2, -1))
-            .lineTo(by/2, 10)
-            .lineTo(-by/2, 10)
+            .lineTo(by/2, height)
+            .lineTo(-by/2, height)
             .close()
             .workplane(offset=-bx/2)
-            .moveTo(-by/2+2, 0)
-            .threePointArc((0, min(-0.1, -depth+1)), (by/2-2, 0))
-            .lineTo(by/2-2, 10)
-            .lineTo(-by/2+2, 10)
+            .moveTo(-by/2+2.4, 0)
+            .threePointArc((0, min(-0.1, -depth+1)), (by/2-2.4, 0))
+            .lineTo(by/2, height)
+            .lineTo(-by/2, height)
             .close()
             .loft(combine=False)
         )
 
     #show_object(tool, options={'alpha': 0.4})
     keycap = keycap - tool
-
+    
     # Top edge fillet
     keycap = keycap.edges(">Z").fillet(0.5)
 
@@ -155,10 +148,10 @@ def keycap(
     if unitX < 2:
         stem_pts = [(0,0)]
     elif unitX < 3:
-        dist = 2.25 / 2 * sx - sx / 2
+        dist = 2.25 / 2 * 19.05 - 19.05 / 2
         stem_pts = [(0,0), (dist, 0), (-dist,0)]
     else:
-        dist = unitX / 2 * sx - sx / 2
+        dist = unitX / 2 * 19.05 - 19.05 / 2
         stem_pts = [(0,0), (dist, 0), (-dist,0)]
 
     stem1 = (
@@ -188,7 +181,7 @@ def keycap(
         .extrude("next")
         .faces("<Z")
         .placeSketch(stem2)
-        .cutBlind(-4.6)
+        .extrude(-4.6, combine="cut")
         .faces(">Z[1]").edges("|X or |Y")
         .chamfer(0.2)
     )
@@ -197,7 +190,7 @@ def keycap(
     if legend:
         legend = (
             cq.Workplane("XY").transformed(offset=cq.Vector(0, 0, height+1), rotate=cq.Vector(angle, 0, 0))
-            .text(legend, fontsize, -4, font=font, halign="center")
+            .text(legend, fontsize, -4, font=font, halign="center", valign="center")
         )
         bb = legend.val().BoundingBox()
         # try to center the legend horizontally
