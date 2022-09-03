@@ -26,11 +26,6 @@ https://matt3o.com
 import cadquery as cq
 from cadquery import exporters
 
-# Prevent error when running from cli
-if 'show_object' not in globals():
-    def show_object(*args, **kwargs):
-        pass
-
 def keycap(
     unitX: float = 1,           # keycap size in unit. Standard sizes: 1, 1.25, 1.5, ...
     unitY: float = 1,
@@ -41,7 +36,7 @@ def keycap(
     tFillet: float = 4,         # Fillet at the top
     height: float = 13,         # Height of the keycap before cutting the scoop (final height is lower)
     angle: float = 7,           # Angle of the top surface
-    depth: float = 2.5,         # Scoop depth
+    depth: float = 2.4,         # Scoop depth
     thickness: float = 1.5,     # Keycap sides thickness
     convex: bool = False,       # Is this a spacebar?
     legend: str = "",           # Legend
@@ -98,7 +93,7 @@ def keycap(
                     )
         .loft()
     )
-    
+
     # Create a body that will be carved from the main shape to create the shape
     if convex:
         tool = (
@@ -112,23 +107,23 @@ def keycap(
         )
     else:
         tool = (
-            cq.Workplane("YZ").transformed(offset=cq.Vector(0, height+1, bx/2), rotate=cq.Vector(0, 0, angle))
-            .moveTo(-by/2+2,0)
-            .threePointArc((0, min(-0.1, -depth+1)), (by/2-2, 0))
-            .lineTo(by/2-2, 10)
-            .lineTo(-by/2+2, 10)
+            cq.Workplane("YZ").transformed(offset=cq.Vector(0, height, bx/2), rotate=cq.Vector(0, 0, angle))
+            .moveTo(-by/2+2.4,0)
+            .threePointArc((0, min(-0.1, -depth+1)), (by/2-2.4, 0))
+            .lineTo(by/2, height)
+            .lineTo(-by/2, height)
             .close()
             .workplane(offset=-bx/2)
             .moveTo(-by/2, -1)
             .threePointArc((0, -depth), (by/2, -1))
-            .lineTo(by/2, 10)
-            .lineTo(-by/2, 10)
+            .lineTo(by/2, height)
+            .lineTo(-by/2, height)
             .close()
             .workplane(offset=-bx/2)
-            .moveTo(-by/2+2, 0)
-            .threePointArc((0, min(-0.1, -depth+1)), (by/2-2, 0))
-            .lineTo(by/2-2, 10)
-            .lineTo(-by/2+2, 10)
+            .moveTo(-by/2+2.4, 0)
+            .threePointArc((0, min(-0.1, -depth+1)), (by/2-2.4, 0))
+            .lineTo(by/2, height)
+            .lineTo(-by/2, height)
             .close()
             .loft(combine=False)
         )
@@ -186,7 +181,7 @@ def keycap(
         .extrude("next")
         .faces("<Z")
         .placeSketch(stem2)
-        .cutBlind(-4.6)
+        .extrude(-4.6, combine="cut")
         .faces(">Z[1]").edges("|X or |Y")
         .chamfer(0.2)
     )
@@ -195,7 +190,7 @@ def keycap(
     if legend:
         legend = (
             cq.Workplane("XY").transformed(offset=cq.Vector(0, 0, height+1), rotate=cq.Vector(angle, 0, 0))
-            .text(legend, fontsize, -4, font=font, halign="center")
+            .text(legend, fontsize, -4, font=font, halign="center", valign="center")
         )
         bb = legend.val().BoundingBox()
         # try to center the legend horizontally
