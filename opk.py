@@ -24,7 +24,6 @@ https://matt3o.com
 """
 
 import cadquery as cq
-from cadquery import exporters
 
 def keycap(
     unitX: float = 1,           # keycap size in unit. Standard sizes: 1, 1.25, 1.5, ...
@@ -40,6 +39,7 @@ def keycap(
     thickness: float = 1.5,     # Keycap sides thickness
     convex: bool = False,       # Is this a spacebar?
     legend: str = "",           # Legend
+    legendDepth: float = -1.0,  # How deep to carve the legend, positive value makes the legend embossed
     font: str = "sans-serif",
     fontsize: float = 10
 ):
@@ -138,8 +138,8 @@ def keycap(
     # we need to subtract a smaller keycap from the main shape
     shell = (
         cq.Workplane("XY").rect(bx-thickness*2, by-thickness*2)
-        .workplane(offset=height/5).rect(bx-thickness*2.3, by-thickness*2.3)
-        .workplane().transformed(offset=cq.Vector(0, 0, height-height/5-5), rotate=cq.Vector(angle, 0, 0)).rect(tx-thickness*2, ty-thickness*2)
+        .workplane(offset=height/4).rect(bx-thickness*3, by-thickness*3)
+        .workplane().transformed(offset=cq.Vector(0, 0, height-height/4-4.5), rotate=cq.Vector(angle, 0, 0)).rect(tx-thickness*2, ty-thickness*2)
         .loft()
     )
     keycap = keycap - shell
@@ -187,7 +187,7 @@ def keycap(
     )
 
     # Add the legend if present
-    if legend:
+    if legend and legendDepth != 0:
         legend = (
             cq.Workplane("XY").transformed(offset=cq.Vector(0, 0, height+1), rotate=cq.Vector(angle, 0, 0))
             .text(legend, fontsize, -4, font=font, halign="center", valign="center")
@@ -196,10 +196,16 @@ def keycap(
         # try to center the legend horizontally
         legend = legend.translate((-bb.center.x, 0, 0))
 
-        legend = legend - keycap
-        legend = legend.translate((0,0,-1))
-        keycap = keycap - legend
-        legend = legend - tool      # this can be used to export the legend for 2 colors 3D printing
+        if legendDepth < 0:
+            legend = legend - keycap
+            legend = legend.translate((0,0,legendDepth))
+            keycap = keycap - legend
+            legend = legend - tool      # this can be used to export the legend for 2 colors 3D printing
+        else:
+            tool = tool.translate((0,0,legendDepth))
+            legend = legend - tool
+            legend = legend - keycap    # use this for multi-color 3D printing
+            keycap = keycap + legend
 
         #show_object(legend, name="legend", options={'color': 'blue', 'alpha': 0})
 
