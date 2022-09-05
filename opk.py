@@ -30,13 +30,13 @@ def keycap(
     unitX: float = 1,           # keycap size in unit. Standard sizes: 1, 1.25, 1.5, ...
     unitY: float = 1,
     base: float = 18.2,         # 1-unit size in mm at the base
-    top: float = 14.2,          # 1-unit size in mm at the top, actual hitting area will be slightly bigger
-    curv: float = 1.3,          # Top side curvature. Higher value makes the top rounder (use small increments)
+    top: float = 13.2,          # 1-unit size in mm at the top, actual hitting area will be slightly bigger
+    curv: float = 1.7,          # Top side curvature. Higher value makes the top rounder (use small increments)
     bFillet: float = 0.5,       # Fillet at the base
-    tFillet: float = 4,         # Fillet at the top
+    tFillet: float = 5,         # Fillet at the top
     height: float = 13,         # Height of the keycap before cutting the scoop (final height is lower)
     angle: float = 7,           # Angle of the top surface
-    depth: float = 2.4,         # Scoop depth
+    depth: float = 2.8,         # Scoop depth
     thickness: float = 1.5,     # Keycap sides thickness
     convex: bool = False,       # Is this a spacebar?
     legend: str = "",           # Legend
@@ -108,20 +108,20 @@ def keycap(
     else:
         tool = (
             cq.Workplane("YZ").transformed(offset=cq.Vector(0, height, bx/2), rotate=cq.Vector(0, 0, angle))
-            .moveTo(-by/2+2.4,0)
-            .threePointArc((0, min(-0.1, -depth+1)), (by/2-2.4, 0))
+            .moveTo(-by/2+2,0)
+            .threePointArc((0, min(-0.1, -depth+1.5)), (by/2-2, 0))
             .lineTo(by/2, height)
             .lineTo(-by/2, height)
             .close()
             .workplane(offset=-bx/2)
-            .moveTo(-by/2, -1)
-            .threePointArc((0, -depth), (by/2, -1))
+            .moveTo(-by/2-2, -0.5)
+            .threePointArc((0, -depth), (by/2+2, -0.5))
             .lineTo(by/2, height)
             .lineTo(-by/2, height)
             .close()
             .workplane(offset=-bx/2)
-            .moveTo(-by/2+2.4, 0)
-            .threePointArc((0, min(-0.1, -depth+1)), (by/2-2.4, 0))
+            .moveTo(-by/2+2, 0)
+            .threePointArc((0, min(-0.1, -depth+1.5)), (by/2-2, 0))
             .lineTo(by/2, height)
             .lineTo(-by/2, height)
             .close()
@@ -132,14 +132,14 @@ def keycap(
     keycap = keycap - tool
     
     # Top edge fillet
-    keycap = keycap.edges(">Z").fillet(0.5)
+    keycap = keycap.edges(">Z").fillet(0.6)
 
     # Since the shell() function is not able to deal with complex shapes
     # we need to subtract a smaller keycap from the main shape
     shell = (
         cq.Workplane("XY").rect(bx-thickness*2, by-thickness*2)
         .workplane(offset=height/5).rect(bx-thickness*2.3, by-thickness*2.3)
-        .workplane().transformed(offset=cq.Vector(0, 0, height-height/5-4), rotate=cq.Vector(angle, 0, 0)).rect(tx-thickness*2, ty-thickness*2)
+        .workplane().transformed(offset=cq.Vector(0, 0, height-height/5-5), rotate=cq.Vector(angle, 0, 0)).rect(tx-thickness*2, ty-thickness*2)
         .loft()
     )
     keycap = keycap - shell
@@ -166,8 +166,8 @@ def keycap(
     stem2 = (
         cq.Sketch()
         .push(stem_pts)
-        .rect(4.1, 1.25)
-        .rect(1.1, 4.1)
+        .rect(4.15, 1.27)
+        .rect(1.12, 4.15)
         .clean()
     )
 
