@@ -145,24 +145,38 @@ def keycap(
     keycap = keycap - shell
 
     # Build the stem and the keycap guts
-    if unitX < 2:
-        stem_pts = [(0,0)]
-    elif unitX < 3:
-        dist = 2.25 / 2 * 19.05 - 19.05 / 2
-        stem_pts = [(0,0), (dist, 0), (-dist,0)]
+    # TODO: we need to find a better way to build the stem...
+    if ( unitY > unitX ):
+        if unitY > 1.75:
+            dist = 2.25 / 2 * 19.05 - 19.05 / 2
+            stem_pts = [(0, 0), (0, dist), (0, -dist)]
+            stem1 = (
+                cq.Sketch()
+                .rect(0.8, ty)
+                .push(stem_pts)
+                .rect(tx, 0.8)
+                .circle(2.75)
+                .clean()
+            )
     else:
-        dist = unitX / 2 * 19.05 - 19.05 / 2
-        stem_pts = [(0,0), (dist, 0), (-dist,0)]
+        if unitX < 2:
+            stem_pts = [(0,0)]
+        elif unitX < 3:     # keycaps smaller than 3unit all have 2.25 stabilizers
+            dist = 2.25 / 2 * 19.05 - 19.05 / 2
+            stem_pts = [(0,0), (dist, 0), (-dist,0)]
+        else:
+            dist = unitX / 2 * 19.05 - 19.05 / 2
+            stem_pts = [(0,0), (dist, 0), (-dist,0)]
 
-    stem1 = (
-        cq.Sketch()
-        .rect(tx, 0.8)
-        .push(stem_pts)
-        .rect(0.8, ty)
-        .circle(2.75)
-        .clean()
-    )
-
+        stem1 = (
+            cq.Sketch()
+            .rect(tx, 0.8)
+            .push(stem_pts)
+            .rect(0.8, ty)
+            .circle(2.75)
+            .clean()
+        )
+    
     stem2 = (
         cq.Sketch()
         .push(stem_pts)
