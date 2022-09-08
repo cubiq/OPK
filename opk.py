@@ -88,8 +88,8 @@ def keycap(
     keycap = (
         cq.Workplane("XY")
         .placeSketch(base,
-                    mid.moved(cq.Location(cq.Vector(0, 0, height/4), (1,0,0), angle/4)),
-                    top.moved(cq.Location(cq.Vector(0, 0, height), (1,0,0), angle))
+                    mid.moved(cq.Location(cq.Vector(0, 0, height/4), cq.Vector(1,0,0), angle/4)),
+                    top.moved(cq.Location(cq.Vector(0, 0, height), cq.Vector(1,0,0), angle))
                     )
         .loft()
     )
