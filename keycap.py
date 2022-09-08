@@ -1,5 +1,8 @@
 import opk
 from cadquery import exporters
+
+from cq_server.ui import ui, show_object
+
 try:
     from cq_server.ui import UI, show_object
 except ModuleNotFoundError:
