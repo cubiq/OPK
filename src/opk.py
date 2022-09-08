@@ -1,12 +1,12 @@
 """
 ==========================
-  ██████  ██████  ██   ██
- ██    ██ ██   ██ ██  ██
- ██    ██ ██████  █████
- ██    ██ ██      ██  ██
-  ██████  ██      ██   ██
+  ██████  ██████  ██   ██ 
+ ██    ██ ██   ██ ██  ██  
+ ██    ██ ██████  █████   
+ ██    ██ ██      ██  ██  
+  ██████  ██      ██   ██ 
 ==========================
- Open Programmatic Keycap
+ Open Programmatic Keycap 
 ==========================
 
 OPK is a spherical top keycap profile developed in CadQuery
@@ -16,7 +16,7 @@ spherical top keycaps.
 
 !!! The profile is still highly experimental and very alpha stage. ¡¡¡
 
-If you use the code please give credit, if you do modifications consider
+If you use the code please give credit, if you do modifications consider 
 releasing them back to the public under a permissive open source license.
 
 Copyright (c) 2022 Matteo "Matt3o" Spinelli
@@ -41,8 +41,7 @@ def keycap(
     legend: str = "",           # Legend
     legendDepth: float = -1.0,  # How deep to carve the legend, positive value makes the legend embossed
     font: str = "sans-serif",
-    fontsize: float = 10,
-    fontPath: str = None
+    fontsize: float = 10
 ):
 
     top_diff = base - top
@@ -56,7 +55,7 @@ def keycap(
     ty = by - top_diff
 
     # if spacebar make the top less round-y
-    tension = .4 if convex else 1
+    tension = .4 if convex else 1 
 
     # Three-section loft of rounded rectangles. Can't find a better way to do variable fillet
     base = (
@@ -131,7 +130,7 @@ def keycap(
 
     #show_object(tool, options={'alpha': 0.4})
     keycap = keycap - tool
-
+    
     # Top edge fillet
     keycap = keycap.edges(">Z").fillet(0.6)
 
@@ -177,7 +176,7 @@ def keycap(
             .circle(2.75)
             .clean()
         )
-
+    
     stem2 = (
         cq.Sketch()
         .push(stem_pts)
@@ -203,16 +202,15 @@ def keycap(
 
     # Add the legend if present
     if legend and legendDepth != 0:
-        if fontPath is None:
-            legend = (
-                cq.Workplane("XY").transformed(offset=cq.Vector(0, 0, height+1), rotate=cq.Vector(angle, 0, 0))
-                .text(legend, fontsize, -4, font=font, halign="center", valign="center")
-            )
-        else:
-            legend = (
-                cq.Workplane("XY").transformed(offset=cq.Vector(0, 0, height+1), rotate=cq.Vector(angle, 0, 0))
-                .text(legend, fontsize, -4, fontPath=fontPath, halign="center", valign="center")
-            )
+        fontPath = ''
+        if font.endswith((".otf", ".ttf", ".ttc")):
+            fontPath = font
+            font = ''
+
+        legend = (
+            cq.Workplane("XY").transformed(offset=cq.Vector(0, 0, height+1), rotate=cq.Vector(angle, 0, 0))
+            .text(legend, fontsize, -4, font=font, fontPath=fontPath, halign="center", valign="center")
+        )
         bb = legend.val().BoundingBox()
         # try to center the legend horizontally
         legend = legend.translate((-bb.center.x, 0, 0))
