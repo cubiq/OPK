@@ -202,9 +202,14 @@ def keycap(
 
     # Add the legend if present
     if legend and legendDepth != 0:
+        fontPath = ''
+        if font.endswith((".otf", ".ttf", ".ttc")):
+            fontPath = font
+            font = ''
+
         legend = (
             cq.Workplane("XY").transformed(offset=cq.Vector(0, 0, height+1), rotate=cq.Vector(angle, 0, 0))
-            .text(legend, fontsize, -4, font=font, halign="center", valign="center")
+            .text(legend, fontsize, -4, font=font, fontPath=fontPath, halign="center", valign="center")
         )
         bb = legend.val().BoundingBox()
         # try to center the legend horizontally
