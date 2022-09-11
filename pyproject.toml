@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "opk"
-version = "0.0.13"
+version = "0.0.14"
 authors = [
   { name="Matteo (Matt3o) Spinelli", email="info@matt3o.com" },
 ]
