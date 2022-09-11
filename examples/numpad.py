@@ -1,7 +1,7 @@
 import opk
 import cadquery as cq
 from cadquery import exporters
-from random import choice
+from kb_render import *
 
 keys = {
     0: [
@@ -32,7 +32,6 @@ keys = {
     { 't':'.' }
     ],
 }
-colours=["tomato2","springgreen3","slateblue2","sienna1","seagreen3","orangered2","orchid2","maroon2","limegreen","lightseagreen","lightcoral","magenta3","yellow"]
 
 #rows = [
     #{'angle': 13, 'height': 16,   'keys': keys[0] },      # row 0, function row
@@ -52,58 +51,11 @@ rows = [
 
 mainFont = "DejaVu Sans Mono"
 mainSize = 9
-assy = cq.Assembly()
 
-y = 0
-for i, r in enumerate(rows):
-    x = 0
-    for j,k in enumerate(r['keys']):
-        kh = 1
-        if 'h' in k:
-            kh = k['h']
-        kw = 1
-        if 'w' in k:
-            kw = k['w']
-        name = "row{}_{}_U{}".format(i,j,kw)
-        convex = False
-        if 'convex' in k:
-            convex = k['convex']
-            name+= "_space"
+sx = 19.05
+sy = 19.05
 
-        depth = 2.8
-        if 'n' in k:
-            if k['n']:
-                name+= "_homing"
-            depth = 3.6
-        legend = ''
-        if 't' in k:
-            legend = k['t']
-        font = mainFont
-        if 'f' in k:
-            font = k['f']
-        fontSize=mainSize
-        if 'fs' in k:
-            fontSize = k['fs']
-
-        print("Generating: {} {}".format(name, legend))
-        cap = opk.keycap(angle=r['angle'], height=r['height'],
-                         unitX=kw, unitY=kh,
-                         convex=convex, depth=depth,
-                         legend=legend, font=font,
-                         fontsize=fontSize)
-        # Export one key at the time
-        #exporters.export(cap, './export/STEP/' + name + '.step')
-        #exporters.export(cap, './export/STL/' + name + '.stl', tolerance=0.001, angularTolerance=0.05)
-        w = 19.05 * kw / 2
-        x+= w
-        oy = 0.0
-        if 'oy' in k:
-            oy = k['oy']
-        y += oy*19.05
-        assy.add(cap, name=name, color=cq.Color(choice(colours)),
-                 loc=cq.Location(cq.Vector(x,y,0)))
-        x+= w
-    y = -(i+1)*19.05
+assy = render_kb(rows, mainFont=mainFont, mainSize = mainSize, sx = sx, sy = sy)
 
 if 'show_object' in locals():
     show_object(assy)
