@@ -1,12 +1,12 @@
 """
 ==========================
-  ██████  ██████  ██   ██ 
- ██    ██ ██   ██ ██  ██  
- ██    ██ ██████  █████   
- ██    ██ ██      ██  ██  
-  ██████  ██      ██   ██ 
+  ██████  ██████  ██   ██
+ ██    ██ ██   ██ ██  ██
+ ██    ██ ██████  █████
+ ██    ██ ██      ██  ██
+  ██████  ██      ██   ██
 ==========================
- Open Programmatic Keycap 
+ Open Programmatic Keycap
 ==========================
 
 OPK is a spherical top keycap profile developed in CadQuery
@@ -16,7 +16,7 @@ spherical top keycaps.
 
 !!! The profile is still highly experimental and very alpha stage. ¡¡¡
 
-If you use the code please give credit, if you do modifications consider 
+If you use the code please give credit, if you do modifications consider
 releasing them back to the public under a permissive open source license.
 
 Copyright (c) 2022 Matteo "Matt3o" Spinelli
@@ -38,10 +38,7 @@ def keycap(
     depth: float = 2.8,         # Scoop depth
     thickness: float = 1.5,     # Keycap sides thickness
     convex: bool = False,       # Is this a spacebar?
-    legend: str = "",           # Legend
-    legendDepth: float = -1.0,  # How deep to carve the legend, positive value makes the legend embossed
-    font: str = "sans-serif",
-    fontsize: float = 10
+    legend: list[dict()]=[{}] ,           # Legend
 ):
 
     top_diff = base - top
@@ -55,7 +52,7 @@ def keycap(
     ty = by - top_diff
 
     # if spacebar make the top less round-y
-    tension = .4 if convex else 1 
+    tension = .4 if convex else 1
 
     # Three-section loft of rounded rectangles. Can't find a better way to do variable fillet
     base = (
@@ -130,7 +127,7 @@ def keycap(
 
     #show_object(tool, options={'alpha': 0.4})
     keycap = keycap - tool
-    
+
     # Top edge fillet
     keycap = keycap.edges(">Z").fillet(0.6)
 
@@ -176,7 +173,7 @@ def keycap(
             .circle(2.75)
             .clean()
         )
-    
+
     stem2 = (
         cq.Sketch()
         .push(stem_pts)
@@ -201,30 +198,56 @@ def keycap(
     )
 
     # Add the legend if present
-    if legend and legendDepth != 0:
-        fontPath = ''
-        if font.endswith((".otf", ".ttf", ".ttc")):
-            fontPath = font
-            font = ''
+    if legend and len(legend)>0:
+        for l in legend:
+            legendDepth = -1.0
+            if 'depth' in l:
+                legendDepth = l['depth']
 
-        legend = (
-            cq.Workplane("XY").transformed(offset=cq.Vector(0, 0, height+1), rotate=cq.Vector(angle, 0, 0))
-            .text(legend, fontsize, -4, font=font, fontPath=fontPath, halign="center", valign="center")
-        )
-        bb = legend.val().BoundingBox()
-        # try to center the legend horizontally
-        legend = legend.translate((-bb.center.x, 0, 0))
+            if legendDepth != 0:
+                fontPath = ''
+                font = ''
+                if 'f' in l:
+                    font = l['f']
+                if font.endswith((".otf", ".ttf", ".ttc")):
+                    fontPath = font
+                    font = ''
+                ox = 0
+                if 'ox' in l:
+                   ox = l['ox']
+                oy = 0
+                if 'oy' in l:
+                   oy = l['oy']
+                t = ''
+                if 't' in l:
+                    t = l['t']
+                fontsize = 10
+                if 'fs' in l:
+                    fontsize = l['fs']
+                halign = 'center'
+                if 'halign' in l:
+                    halign = l['halign']
+                valign = 'center'
+                if 'valign' in l:
+                    valign = l['valign']
+                leg = (
+                        cq.Workplane("XY").transformed(offset=cq.Vector(0, 0, height+1), rotate=cq.Vector(angle, 0, 0))
+                        .text(t, fontsize, -4, font=font, fontPath=fontPath, halign=halign, valign=valign)
+                        )
+                bb = leg.val().BoundingBox()
+                # try to center the legend horizontally
+                legend = leg.translate((-bb.center.x+ox, oy, 0))
 
-        if legendDepth < 0:
-            legend = legend - keycap
-            legend = legend.translate((0,0,legendDepth))
-            keycap = keycap - legend
-            legend = legend - tool      # this can be used to export the legend for 2 colors 3D printing
-        else:
-            tool = tool.translate((0,0,legendDepth))
-            legend = legend - tool
-            legend = legend - keycap    # use this for multi-color 3D printing
-            keycap = keycap + legend
+                if legendDepth < 0:
+                    legend = legend - keycap
+                    legend = legend.translate((0,0,legendDepth))
+                    keycap = keycap - legend
+                    legend = legend - tool      # this can be used to export the legend for 2 colors 3D printing
+                else:
+                    tool = tool.translate((0,0,legendDepth))
+                    legend = legend - tool
+                    legend = legend - keycap    # use this for multi-color 3D printing
+                    keycap = keycap + legend
 
         #show_object(legend, name="legend", options={'color': 'blue', 'alpha': 0})
 
