@@ -1,7 +1,9 @@
-import opk
+from  opk import *
 import cadquery as cq
-cap = opk.keycap(legend="",unitX=1,unitY=1,fontPath="./FontAwesome5Brands-Regular-400.otf")
-#show_object(cap, name="keycap", options={"alpha": 0})
 
-cq.exporters.export(cap, 'keycap.stl', tolerance=0.001, angularTolerance=0.05)
+cap = keycap(legend="",unitX=1,unitY=1.0, font="/usr/share/fonts/truetype/Font_Awesome_6_Brands-Regular-400.otf",convex=True)
+cq.exporters.export(cap, 'space-penguin.stl', tolerance=0.001, angularTolerance=0.05)
+cs = keycap(legend="",unitX=1,unitY=1.0, font="/usr/share/fonts/truetype/Font_Awesome_6_Brands-Regular-400.otf",convex=True)
+cq.exporters.export(cs, 'space-cameleon.stl', tolerance=0.001, angularTolerance=0.05)
+
 #exporters.export(cap, 'keycap.step')

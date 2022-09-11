@@ -1,1 +1,1 @@
-import("/home/drFaustroll/lavello/OPK_alin/examples/keycaps.stl");
+import("k0-1.stl");

@@ -50,26 +50,15 @@ for row,ll,ff in zip(leg,lay,fonts):
             fs=vfs[len(k)]
         if (len(k.split("\n"))==2):
             fs = 4.5
-        if os.path.isfile(f):
-            rows.add(keycap(legend=k,
-                           angle=angles[i],
-                           fontPath=f,
-                           convex=convex,
-                           depth = scoop,
-                           fontsize = fs,
-                           unitX=l),
-                    name="k{}{}".format(i,j),
-                    loc=cq.Location(cq.Vector(x,y,0)))
-        else:
-            rows.add(keycap(legend=k,
-                           angle=angles[i],
-                           fontPath=f,
-                           convex=convex,
-                           depth = scoop,
-                           font = f,
-                           unitX=l),
-                    name="k{}{}".format(i,j),
-                    loc=cq.Location(cq.Vector(x,y,0)))
+
+        rows.add(keycap(legend=k,
+                        angle=angles[i],
+                        font=f,
+                        convex=convex,
+                        depth = scoop,
+                        unitX=l),
+                 name="k{}{}".format(i,j),
+                 loc=cq.Location(cq.Vector(x,y,0)))
         x += w
 cq.exporters.export(rows.toCompound(), 'keycaps.stl', tolerance=0.001, angularTolerance=0.05)
 #show_object(rows, name="rows", options={"alpha": 0})
