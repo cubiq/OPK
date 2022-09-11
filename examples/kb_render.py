@@ -2,7 +2,7 @@ import cadquery as cq
 from random import choice
 import opk
 
-def render_kb(rows, mainFont="DejaVu Sans Mono", mainSize = 9, sx = 19.05, sy = 19.05, depth = 2.8):
+def render_kb(rows, mainFont="DejaVu Sans Mono", mainSize = 9, sx = 19.05, sy = 19.05, depth = 2.8, export = False ):
 
     assy = cq.Assembly()
     colours=["tomato2","springgreen3","slateblue2","sienna1","seagreen3","orangered2","orchid2","maroon2","limegreen","lightseagreen","lightcoral","magenta3","yellow"]
@@ -44,8 +44,9 @@ def render_kb(rows, mainFont="DejaVu Sans Mono", mainSize = 9, sx = 19.05, sy = 
                             legend=legend, font=font,
                             fontsize=fontSize)
             # Export one key at the time
-            #exporters.export(cap, './export/STEP/' + name + '.step')
-            #exporters.export(cap, './export/STL/' + name + '.stl', tolerance=0.001, angularTolerance=0.05)
+            if export:
+                cq.exporters.export(cap, './export/STEP/' + name + '.step')
+                cq.exporters.export(cap, './export/STL/' + name + '.stl', tolerance=0.001, angularTolerance=0.05)
             w = sx * kw / 2
             ox = 0.0
             if 'ox' in k:

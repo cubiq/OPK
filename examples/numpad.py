@@ -11,25 +11,25 @@ keys = {
     { 't':'-'}
     ],
     1: [
-    { 't':'7' },
-    { 't':'8' },
-    { 't':'9' },
+    { 't':'7\nHome','fs':4.5 },
+    { 't':'8\n↑','fs':4.5 },
+    { 't':'9\nPgUp','fs':4.5 },
     { 't':'+','h':2,'oy':-0.5 }
     ],
     2: [
-    { 't':'4' },
+    { 't':'4\n←','fs':4.5 },
     { 't':'5','n':True },
-    { 't':'6' }
+    { 't':'6\n→','fs':4.5 }
     ],
     3: [
-    { 't':'1' },
-    { 't':'2' },
-    { 't':'3' },
+    { 't':'1\nEnd','fs':4.5 },
+    { 't':'2\n↓','fs':4.5 },
+    { 't':'3\nPgDn','fs':4.5 },
     { 't':'⊼','h':2,'oy':-0.5 },
     ],
     4: [
-    { 'w': 2,'t':'0' },
-    { 't':'.' }
+    { 'w': 2,'t':'0\nIns','fs':6 },
+    { 't':'.\nDel', 'fs':5 }
     ],
 }
 
@@ -55,7 +55,7 @@ mainSize = 9
 sx = 19.05
 sy = 19.05
 
-assy = render_kb(rows, mainFont=mainFont, mainSize = mainSize, sx = sx, sy = sy)
+assy = render_kb(rows, mainFont=mainFont, mainSize = mainSize, sx = sx, sy = sy, export=True)
 
 if 'show_object' in locals():
     show_object(assy)

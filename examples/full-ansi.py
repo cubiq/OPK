@@ -1,89 +1,147 @@
-#!/usr/bin/env python3
-
+import opk
 import cadquery as cq
-from opk import *
-leg = [ ["⎋","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12", "Prn\nScr","Scr\nLock","Pause"],
-        ["¬\n`","!\n1","\"\n2","£\n3","$\n4","%\n5","^\n6","&\n7","*\n8","(\n9",")\n0","_\n-","=\n+","⌫","Ins","Home","Pg\nUp","Num","/","*","-"],
-["↹","q","w","e","r","t","y","u","i","o","p","[","]","|\n\\","Del","End","Pg\nDn","7","8","9","+"],
-["⇪","a","s","d","f","g","h","j","k","l",";","'","enter","4","5","6","+"],
-["⇧","z","x","c","v","b","n","m",",",".","/","⇧","↑","1","2","3","Ent"],
-["⎈","","Alt","","Alt","Fn","Mnu","Ctrl","←","↓","→","0",".","Ent"]]
-lay= [[1]*16,
-      [1]*13+[2]+[1]*7,
-      [1.5]+[1]*12+[1.5]+[1]*7,
-      [1.75]+[1]*11+[2.25]+[1]*4,
-      [2.25]+[1]*10+[2.75]+[1]*5,
-      [1.25,1.25,1.25,6.25,1.25,1.25,1.25,1.25,1,1,1,2,1,1]]
-fonts=[
-        ["DejaVu Sans Mono"]*16,
-        ["DejaVu Sans Mono"]*21,
-        ["DejaVu Sans Mono"]*21,
-        ["DejaVu Sans Mono"]*17,
-        ["DejaVu Sans Mono"]*17,
-        ["DejaVu Sans Mono"]+["Font Awesome 6 Brands"]+["Noto Sans"]*6+["DejaVu Sans Mono"]*6
-        ]
+from cadquery import exporters
+from kb_render import *
 
-offx=[[0,1,0,0,0]+[0.5,0,0,0]+[0.5,0,0,0]+[0.5,0,0],
-      [0.0]*14+[0.5,0,0,0.5,0.0,0,0],
-      [0.0]*14+[0.5,0,0,0.5,0,0,0],
-      [0.0]*13+[4,0,0,0],
-      [0.0]*12+[1.5,1.5,0,0,0],
-      [0.0]*8+[0.5,0,0,0.5,0,0]
-      ]
-offy=[[0.5]+[0]*15,
-      [0]*21,
-      [0]*21,
-      [0]*17,
-      [0]*17,
-      [0]*14
-      ]
+keys = {
+    0: [
+        {'t':'⎋'},
+        {'t':'F1','ox':1.0,'fs':6},
+        {'t':'F2','fs':6},
+        {'t':'F3','fs':6},
+        {'t':'F4','fs':6},
+        {'t':'F5','ox':0.5,'fs':6},
+        {'t':'F6','fs':6},
+        {'t':'F7','fs':6},
+        {'t':'F8','fs':6},
+        {'t':'F9','ox':0.5,'fs':6},
+        {'t':'F10','fs':6},
+        {'t':'F11','fs':6},
+        {'t':'F12','fs':6},
+        {'t':'Print\nScreen','ox':0.5,'fs':3},
+        {'t':'Screen\nLock','fs':3},
+        {'t':'Pause','fs':3}
+        ],
+    1: [
+        { 't':'`\n¬','fs':5, 'oy':-0.5},
+        { 't':'!\n1','fs':5},
+        { 't':'"\n2','fs':5},
+        { 't':'£\n3','fs':5},
+        { 't':'$\n4','fs':5},
+        { 't':'%\n5','fs':5},
+        { 't':'^\n6','fs':5},
+        { 't':'&\n7','fs':5},
+        { 't':'*\n8','fs':5},
+        { 't':'(\n9','fs':5},
+        { 't':')\n0','fs':5},
+        { 't':'-\n_','fs':5},
+        { 't':'+\n=','fs':5},
+        { 'w':2,'t':'⌫','fs':12},
+        { 't':'Ins','fs':5,'ox':0.5},
+        { 't':'Home','fs':5},
+        { 't':'Pg\nUp','fs':5},
+        { 't':'Num','fs':7,'ox':0.5},
+        { 't':'/'},
+        { 't':'*' },
+        { 't':'-'}
+    ],
+    2: [
+        { 'w':1.5,'t':'↹','fs':12,'oy':-0.5},
+        { 't':'q' },
+        { 't':'w' },
+        { 't':'e' },
+        { 't':'r' },
+        { 't':'t' },
+        { 't':'y' },
+        { 't':'u' },
+        { 't':'i' },
+        { 't':'o' },
+        { 't':'p' },
+        { 't':'[\n{','fs':5 },
+        { 't':']\n}','fs':5 },
+        { 'w':1.5,'t':'|\n\\','fs':5 },
+        { 't':'Del','ox':0.5,'fs':5 },
+        { 't':'End','fs':5 },
+        { 't':'Pg\nDn','fs':5},
+        { 't':'7','ox':0.5 },
+        { 't':'8' },
+        { 't':'9' },
+        { 't':'+','h':2,'oy':-0.5 }
+    ],
+    3: [
+        { 'w':1.75,'t':'⇪','oy':-0.5 },
+        { 't':'a' },
+        { 't':'s' },
+        { 't':'d' },
+        { 't':'f','n': True },
+        { 't':'g' },
+        { 't':'h' },
+        { 't':'j','n': True },
+        { 't':'k' },
+        { 't':'l' },
+        { 't':';\n:','fs':5 },
+        { 't':'\'\n@','fs':5 },
+        { 'w':2.25,'t':'⊼','fs':12 },
+        { 't':'4','ox':4.0 },
+        { 't':'5','n':True },
+        { 't':'6' }
+    ],
+    4: [
+        { 'w':2.25,'t':'⇧','oy':-0.5 },
+        { 't':'z' },
+        { 't':'x' },
+        { 't':'c' },
+        { 't':'v' },
+        { 't':'b' },
+        { 't':'n' },
+        { 't':'m' },
+        { 't':',\n<','fs':5 },
+        { 't':'.\n>','fs':5 },
+        { 't':'/\n?','fs':5 },
+        { 'w':2.75,'t':'⇧'},
+        { 't':'↑','fs':12,'ox':1.5},
+        { 't':'1','ox':1.5 },
+        { 't':'2' },
+        { 't':'3' },
+        { 't':'⊼','h':2,'oy':-0.5 },
+        ],
+    5: [
+        { 'w': 1.25,'t':'⎈','oy':-0.5 },
+        { 'w': 1.25,'t':'','f':"/usr/share/fonts/texlive-fontawesome5/FontAwesome5Brands-Regular-400.otf"},
+        { 'w': 1.25,'t':'⎇','f':"/usr/share/fonts/truetype/NotoSansSymbols-Black.ttf"},
+        { 'w': 6.25, 'convex':True},
+        { 'w':1.25, 't':'⎇','f':"/usr/share/fonts/truetype/NotoSansSymbols-Black.ttf" },
+        {'w':1.25, 't':'Fn'},
+        { 'w': 1.25,'t':'','f':"/usr/share/fonts/texlive-fontawesome5/FontAwesome5Brands-Regular-400.otf" },
+        { 'w': 1.25,'t':'⎈'},
+        { 't':'←','fs':12,'ox': 0.5},
+        { 't':'↓','fs':12 },
+        { 't':'→','fs':12 },
+        { 'w': 2,'t':'0','ox':0.5 },
+        { 't':'.' }
+    ],
+}
 
-sx=19.05
-sy=19.05
+rows = [
+    {'angle': 13, 'height': 16,   'keys': keys[0] },      # row 0, function row
+    {'angle': 9,  'height': 14,   'keys': keys[1] },      # row 1, numbers row
+    {'angle': 8,  'height': 12,   'keys': keys[2] },      # row 2, QWERT
+    {'angle': -6, 'height': 11.5, 'keys': keys[3] },      # row 3, ASDFG
+    {'angle': -8, 'height': 13,   'keys': keys[4] },      # row 4, ZXCVB
+    {'angle': 0,  'height': 12.5, 'keys': keys[5] },      # row 5, bottom row
+]
 
-m65 = cq.Assembly()
+mainFont = "DejaVu Sans Mono"
+mainSize = 9
 
-y = 0
-i = -1
-j = -1
+sx = 19.05
+sy = 19.05
 
-angles=[13.5,9,8.5,-6,-7,0]
-vfs=[0,9,7,6,4.5,4.5]
+assy = render_kb(rows, mainFont=mainFont, mainSize = mainSize, sx = sx, sy = sy)
 
-for row,ll,ff,ofx,ofy in zip(leg,lay,fonts,offx,offy):
+if 'show_object' in locals():
+    show_object(assy)
 
-    i += 1
-    y = -(i+1)*sy
-
-    x = 0
-    for k,l,f,ox,oy in zip(row,ll,ff,ofx,ofy):
-        print(k,len(k),l,f)
-        w = l*sx/2.0
-        j += 1
-        x += w + ox*sx
-        y += oy*sy
-        convex=False
-        if k == '':
-            convex=True
-        scoop = 2.5
-        if k in ['f','F','j','J']:
-            scoop = 2.5*1.2
-        fs=3
-        if len(k)<=5:
-            fs=vfs[len(k)]
-        if (len(k.split("\n"))==2):
-            fs = 4.5
-        m65.add(keycap(legend=k,
-                       angle=angles[i],
-                       font=f,
-                      convex=convex,
-                       depth = scoop,
-                       fontsize=fs,
-                       unitX=l),
-                name="k{}{}".format(i,j),
-                loc=cq.Location(cq.Vector(x,y,0))
-                )
-        x += w
-
-#cq.exporters.export(m65.toCompound(), 'keycaps.stl', tolerance=0.001, angularTolerance=0.05)
-show_object(m65, name="legend", options={'color': 'red', 'alpha': 0})
+# Export the whole assembly, very handy especially for STEP
+#exporters.export(assy.toCompound(), 'keycaps.stl', tolerance=0.001, angularTolerance=0.05)
+#exporters.export(assy.toCompound(), 'keycaps.step')
