@@ -5,7 +5,7 @@ from kb_render import *
 
 keys = {
     0: [
-        { 't':'⎋ `\n  ¬','fs':5},
+        { 't':'⎋ `\n  ¬','fs':5, 'f':"DejaVu Sans Mono"},
         { 't':'1\n!','fs':5 },
         { 't':'2\n\"','fs':5 },
         { 't':'3\n£','fs':5 },
@@ -37,11 +37,11 @@ keys = {
     2: [
         { 't':'#  \n~ ⇪','fs':5 },
         { 't':'a α\nă  ̇','fs':5 },
-        { 't':'s ∑\nș ⨋','fs':5 },
+        { 't':'s ∑\nș ⨋','fs':5, 'f':"/usr/share/fonts/truetype/NotoSansMath-Regular.ttf" },
         { 't':'d δ\n  ∂','fs':5 },
         { 't':'f φ\n  ψ','n': True,'fs':5 },
         { 't':'g γ\n  Γ','fs':5 },
-        { 't':'h ℏ\n  𝓗','fs':5 },
+        { 't':'h ℏ\n  𝓗','fs':5, 'f':"/usr/share/fonts/truetype/NotoSansMath-Regular.ttf" },
         { 't':'j ∈\n  ∉','n': True,'fs':5 },
         { 't':'k ϰ\n  ∆','fs':5 },
         { 't':'l λ\n  Λ','fs':5 },
@@ -97,7 +97,7 @@ rows = [
     {'angle': 0,  'height': 12.5, 'keys': keys[4] },      # row 5, bottom row
 ]
 
-mainFont = "DejaVu Sans Mono"
+mainFont = "./Atkinson-Hyperlegible-Bold-102.otf"
 mainSize = 9
 
 sx = 19.05
@@ -109,5 +109,5 @@ if 'show_object' in locals():
     show_object(assy)
 
 # Export the whole assembly, very handy especially for STEP
-#exporters.export(assy.toCompound(), 'keycaps.stl', tolerance=0.001, angularTolerance=0.05)
+exporters.export(assy.toCompound(), 'keycaps.stl', tolerance=0.001, angularTolerance=0.05)
 #exporters.export(assy.toCompound(), 'keycaps.step')
