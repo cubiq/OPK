@@ -40,8 +40,8 @@ def keycap(
     convex: bool = False,       # Is this a spacebar?
     legend: str = "",           # Legend
     legendDepth: float = -1.0,  # How deep to carve the legend, positive value makes the legend embossed
-    font: str = "sans-serif",
-    fontsize: float = 10
+    font: str = "sans-serif",   # font name, use a font name including extension to use a local file
+    fontsize: float = 10,       # the font size is in units
 ):
 
     top_diff = base - top
@@ -139,36 +139,45 @@ def keycap(
     shell = (
         cq.Workplane("XY").rect(bx-thickness*2, by-thickness*2)
         .workplane(offset=height/4).rect(bx-thickness*3, by-thickness*3)
-        .workplane().transformed(offset=cq.Vector(0, 0, height-height/4-4.5), rotate=cq.Vector(angle, 0, 0)).rect(tx-thickness*2, ty-thickness*2)
+        .workplane().transformed(offset=cq.Vector(0, 0, height-height/4-4.5), rotate=cq.Vector(angle, 0, 0)).rect(tx-thickness*2+.5, ty-thickness*2+.5)
         .loft()
     )
     keycap = keycap - shell
 
-    # Build the stem and the keycap guts
-    # TODO: we need to find a better way to build the stem...
-    if ( unitY > unitX ):
-        if unitY > 1.75:
-            dist = 2.25 / 2 * 19.05 - 19.05 / 2
-            stem_pts = [(0, 0), (0, dist), (0, -dist)]
-            stem1 = (
-                cq.Sketch()
-                .rect(0.8, ty)
-                .push(stem_pts)
-                .rect(tx, 0.8)
-                .circle(2.75)
-                .clean()
-            )
-    else:
-        if unitX < 2:
-            stem_pts = [(0,0)]
-        elif unitX < 3:     # keycaps smaller than 3unit all have 2.25 stabilizers
-            dist = 2.25 / 2 * 19.05 - 19.05 / 2
-            stem_pts = [(0,0), (dist, 0), (-dist,0)]
-        else:
-            dist = unitX / 2 * 19.05 - 19.05 / 2
-            stem_pts = [(0,0), (dist, 0), (-dist,0)]
+    # create a temporary surface that will be used to project the stems to
+    # this is needed because extrude(face) needs the entire extruded outline to be contained inside the destination face
+    #tmpface = shell.faces('>Z').workplane().rect(bx*2, by*2).extrude(1, combine=False).faces('<<Z[-2]').val()
+    tmpface = shell.faces('>Z').workplane().rect(bx*2, by*2).val()
+    tmpface = cq.Face.makeFromWires(tmpface)
 
-        stem1 = (
+    # Build the stem and the keycap guts
+    stem_pts = [(0,0)]
+
+    if ( unitY > unitX ):
+        if unitY > 2.75:
+            dist = unitY / 2 * 19.05 - 19.05 / 2
+            stem_pts.extend([(0, dist), (0, -dist)])
+        elif unitY > 1.75:
+            dist = 2.25 / 2 * 19.05 - 19.05 / 2
+            stem_pts.extend([(0, -dist), (0, dist)])
+
+        stems = (
+            cq.Sketch()
+            .rect(0.8, ty)
+            .push(stem_pts)
+            .circle(2.75)
+            .rect(tx, 0.8)
+            .clean()
+        )
+    else:
+        if unitX > 2.75:
+            dist = unitX / 2 * 19.05 - 19.05 / 2
+            stem_pts.extend([(dist, 0), (-dist,0)])
+        elif unitX > 1.75:      # keycaps smaller than 3unit all have 2.25 stabilizers
+            dist = 2.25 / 2 * 19.05 - 19.05 / 2
+            stem_pts.extend([(dist, 0), (-dist,0)])
+        
+        stems = (
             cq.Sketch()
             .rect(tx, 0.8)
             .push(stem_pts)
@@ -176,7 +185,8 @@ def keycap(
             .circle(2.75)
             .clean()
         )
-    
+
+    # this is the stem +
     stem2 = (
         cq.Sketch()
         .push(stem_pts)
@@ -186,9 +196,9 @@ def keycap(
     )
 
     keycap = (
-        keycap.faces("<Z").transformed(offset=cq.Vector(0, 0, 4.5))
-        .placeSketch(stem1)
-        .extrude("next")
+        keycap.faces("<Z").transformed(offset=cq.Vector(0, 0, 4.5)).workplane()
+        .placeSketch(stems)
+        .extrude(tmpface)
         .faces("<Z").workplane(offset=-0.6)
         .pushPoints(stem_pts)
         .circle(2.75)
@@ -242,3 +252,5 @@ def keycap(
     """
 
     return keycap
+
+#show_object(keycap(unitX=1, unitY=1))
