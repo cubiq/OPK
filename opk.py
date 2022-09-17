@@ -1,12 +1,12 @@
 """
 ==========================
-  ██████  ██████  ██   ██ 
- ██    ██ ██   ██ ██  ██  
- ██    ██ ██████  █████   
- ██    ██ ██      ██  ██  
-  ██████  ██      ██   ██ 
+  ██████  ██████  ██   ██
+ ██    ██ ██   ██ ██  ██
+ ██    ██ ██████  █████ 
+ ██    ██ ██      ██  ██ 
+  ██████  ██      ██   ██
 ==========================
- Open Programmatic Keycap 
+ Open Programmatic Keycap
 ==========================
 
 OPK is a spherical top keycap profile developed in CadQuery
@@ -23,6 +23,7 @@ Copyright (c) 2022 Matteo "Matt3o" Spinelli
 https://matt3o.com
 """
 
+import math
 import cadquery as cq
 
 def keycap(
@@ -42,6 +43,7 @@ def keycap(
     legendDepth: float = -1.0,  # How deep to carve the legend, positive value makes the legend embossed
     font: str = "sans-serif",   # font name, use a font name including extension to use a local file
     fontsize: float = 10,       # the font size is in units
+    pos: bool = False           # use POS style stabilizers
 ):
 
     top_diff = base - top
@@ -55,7 +57,10 @@ def keycap(
     ty = by - top_diff
 
     # if spacebar make the top less round-y
-    tension = .4 if convex else 1 
+    tension = .4 if convex else 1
+
+    if unitX < 2 and unitY < 2:
+        pos = False
 
     # Three-section loft of rounded rectangles. Can't find a better way to do variable fillet
     base = (
@@ -146,45 +151,51 @@ def keycap(
 
     # create a temporary surface that will be used to project the stems to
     # this is needed because extrude(face) needs the entire extruded outline to be contained inside the destination face
-    #tmpface = shell.faces('>Z').workplane().rect(bx*2, by*2).extrude(1, combine=False).faces('<<Z[-2]').val()
     tmpface = shell.faces('>Z').workplane().rect(bx*2, by*2).val()
     tmpface = cq.Face.makeFromWires(tmpface)
 
     # Build the stem and the keycap guts
-    stem_pts = [(0,0)]
 
-    if ( unitY > unitX ):
-        if unitY > 2.75:
-            dist = unitY / 2 * 19.05 - 19.05 / 2
-            stem_pts.extend([(0, dist), (0, -dist)])
-        elif unitY > 1.75:
-            dist = 2.25 / 2 * 19.05 - 19.05 / 2
-            stem_pts.extend([(0, -dist), (0, dist)])
+    if pos:     # POS-like stems
+        stem_pts = []
+        ribh_pts = []
+        ribv_pts = []
 
-        stems = (
-            cq.Sketch()
-            .rect(0.8, ty)
-            .push(stem_pts)
-            .circle(2.75)
-            .rect(tx, 0.8)
-            .clean()
-        )
-    else:
-        if unitX > 2.75:
-            dist = unitX / 2 * 19.05 - 19.05 / 2
-            stem_pts.extend([(dist, 0), (-dist,0)])
-        elif unitX > 1.75:      # keycaps smaller than 3unit all have 2.25 stabilizers
-            dist = 2.25 / 2 * 19.05 - 19.05 / 2
-            stem_pts.extend([(dist, 0), (-dist,0)])
-        
-        stems = (
-            cq.Sketch()
-            .rect(tx, 0.8)
-            .push(stem_pts)
-            .rect(0.8, ty)
-            .circle(2.75)
-            .clean()
-        )
+        stem_num_x = math.floor(unitX)
+        stem_num_y = math.floor(unitY)
+        stem_start_x = round(-19.05 * (stem_num_x / 2) + 19.05 / 2, 6)
+        stem_start_y = round(-19.05 * (stem_num_y / 2) + 19.05 / 2, 6)
+
+        for i in range(0, stem_num_y):
+            ribh_pts.extend([(0, stem_start_y+i*19.05)])
+            for l in range(0, stem_num_x):
+                if i == 0:
+                    ribv_pts.extend([(stem_start_x+l*19.05, 0)])
+                stem_pts.extend([(stem_start_x+l*19.05, stem_start_y+i*19.05)])
+
+    else:       # standard stems
+        stem_pts = [(0,0)]
+
+        if ( unitY > unitX ):
+            if unitY > 2.75:
+                dist = unitY / 2 * 19.05 - 19.05 / 2
+                stem_pts.extend([(0, dist), (0, -dist)])
+            elif unitY > 1.75:
+                dist = 2.25 / 2 * 19.05 - 19.05 / 2
+                stem_pts.extend([(0, -dist), (0, dist)])
+            
+            ribh_pts = stem_pts
+            ribv_pts = [(0,0)]
+        else:
+            if unitX > 2.75:
+                dist = unitX / 2 * 19.05 - 19.05 / 2
+                stem_pts.extend([(dist, 0), (-dist,0)])
+            elif unitX > 1.75:      # keycaps smaller than 3unit all have 2.25 stabilizers
+                dist = 2.25 / 2 * 19.05 - 19.05 / 2
+                stem_pts.extend([(dist, 0), (-dist,0)])
+            
+            ribh_pts = [(0,0)]
+            ribv_pts = stem_pts
 
     # this is the stem +
     stem2 = (
@@ -197,7 +208,14 @@ def keycap(
 
     keycap = (
         keycap.faces("<Z").transformed(offset=cq.Vector(0, 0, 4.5)).workplane()
-        .placeSketch(stems)
+        .pushPoints(stem_pts)
+        .circle(2.75)
+        .extrude(tmpface)
+        .pushPoints(ribh_pts)
+        .rect(tx, 0.8)
+        .extrude(tmpface)
+        .pushPoints(ribv_pts)
+        .rect(0.8, ty)
         .extrude(tmpface)
         .faces("<Z").workplane(offset=-0.6)
         .pushPoints(stem_pts)
@@ -252,5 +270,3 @@ def keycap(
     """
 
     return keycap
-
-#show_object(keycap(unitX=1, unitY=1))
