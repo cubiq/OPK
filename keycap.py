@@ -1,12 +1,19 @@
-import opk
+"""
+Simplest OPK Example to generate one key
+
+Uncomment the exporters to save the model locally
+"""
+from opk import opk
 from cadquery import exporters
+
 try:
-    from cq_server.ui import UI, show_object
+    from cq_server.ui import ui, show_object
 except ModuleNotFoundError:
     pass
 
 cap = opk.keycap()
-show_object(cap)
+if 'show_object' in locals():
+    show_object(cap)
 
 #exporters.export(cap, 'keycap.stl', tolerance=0.001, angularTolerance=0.05)
 #exporters.export(cap, 'keycap.step')

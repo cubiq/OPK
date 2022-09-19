@@ -89,12 +89,13 @@ The code includes an example to use a DXF drawing as legend (check the comments 
 ## TODO
 - add stepped key
 - add ISO Enter
-- add 2U pos-like stabilizers
-- add support for logos and graphical legends
+- ~~add 2U pos-like stabilizers~~
+- ~~add support for logos and graphical legends~~
 - add reinforcement for big keys
 - add more examples
 - output files already supported for 3D printing
 - online editor
 - add secondary/tertiary legends
 - add support for stems other than cherry
-- clean up the code
+- clean up the code and do things "the python way"
+- better documentation

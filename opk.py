@@ -101,7 +101,7 @@ def keycap(
 
     # Create a body that will be carved from the main shape to create the top scoop
     if convex:
-        tool = (
+        scoop = (
             cq.Workplane("YZ").transformed(offset=cq.Vector(0, height-2.1, -bx/2), rotate=cq.Vector(0, 0, angle))
             .moveTo(-by/2, -1)
             .threePointArc((0, 2), (by/2, -1))
@@ -111,7 +111,7 @@ def keycap(
             .extrude(bx, combine=False)
         )
     else:
-        tool = (
+        scoop = (
             cq.Workplane("YZ").transformed(offset=cq.Vector(0, height, bx/2), rotate=cq.Vector(0, 0, angle))
             .moveTo(-by/2+2,0)
             .threePointArc((0, min(-0.1, -depth+1.5)), (by/2-2, 0))
@@ -134,7 +134,7 @@ def keycap(
         )
 
     #show_object(tool, options={'alpha': 0.4})
-    keycap = keycap - tool
+    keycap = keycap - scoop
     
     # Top edge fillet
     keycap = keycap.edges(">Z").fillet(0.6)
@@ -235,38 +235,38 @@ def keycap(
             fontPath = font
             font = ''
 
-        legend = (
-            cq.Workplane("XY").transformed(offset=cq.Vector(0, 0, height+1), rotate=cq.Vector(angle, 0, 0))
-            .text(legend, fontsize, -4, font=font, fontPath=fontPath, halign="center", valign="center")
-        )
-        bb = legend.val().BoundingBox()
-        # try to center the legend horizontally
-        legend = legend.translate((-bb.center.x, 0, 0))
-
+        if legend.endswith('.dxf'):
+            legend = (
+                cq.importers
+                .importDXF(legend)
+                .wires().toPending()
+                .extrude(-4)
+                .translate((0,0,height+1))
+                .rotateAboutCenter((1,0,0), angle)
+            )
+            # center the legend
+            bb = legend.val().BoundingBox()
+            legend = legend.translate((-bb.center.x, -bb.center.y, 0))
+        else:
+            legend = (
+                cq.Workplane("XY").transformed(offset=cq.Vector(0, 0, height+1), rotate=cq.Vector(angle, 0, 0))
+                .text(legend, fontsize, -4, font=font, fontPath=fontPath, halign="center", valign="center")
+            )
+            bb = legend.val().BoundingBox()
+            # only center horizontally to keep the baseline
+            legend = legend.translate((-bb.center.x, 0, 0))
+        
         if legendDepth < 0:
             legend = legend - keycap
             legend = legend.translate((0,0,legendDepth))
             keycap = keycap - legend
-            legend = legend - tool      # this can be used to export the legend for 2 colors 3D printing
+            legend = legend - scoop      # this can be used to export the legend for 2 colors 3D printing
         else:
-            tool = tool.translate((0,0,legendDepth))
-            legend = legend - tool
+            scoop = scoop.translate((0,0,legendDepth))
+            legend = legend - scoop
             legend = legend - keycap    # use this for multi-color 3D printing
             keycap = keycap + legend
 
         #show_object(legend, name="legend", options={'color': 'blue', 'alpha': 0})
-
-    """
-    # Example to cut a DXF logo out of the keycap
-    logo = (
-        cq.importers
-        .importDXF('logo.dxf')
-        .wires().toPending()
-        .extrude(-2)
-        .translate((-5,-4.6,height)) # needs centering
-        .rotateAboucurventer((1,0,0), angle)
-    )
-    keycap = keycap - logo
-    """
 
     return keycap
