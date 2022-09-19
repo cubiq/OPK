@@ -3,7 +3,7 @@ Simplest OPK Example to generate one key
 
 Uncomment the exporters to save the model locally
 """
-from opk import opk
+import opk
 from cadquery import exporters
 
 try:
@@ -12,6 +12,7 @@ except ModuleNotFoundError:
     pass
 
 cap = opk.keycap()
+
 if 'show_object' in locals():
     show_object(cap)
 
