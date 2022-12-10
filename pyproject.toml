@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "opk"
+version = "0.0.16"
+authors = [
+  { name="Matteo (Matt3o) Spinelli", email="info@matt3o.com" },
+]
+
+description = "Open Programmatic Keycap"
+readme = "README.md"
+license = { file="LICENSE" }
+requires-python = ">=3.7"
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+]
+
+dependencies = [
+  "cadquery==2.2.0b1",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/cubiq/OPK"
+"Bug Tracker" = "https://github.com/cubiq/OPK/issues"
