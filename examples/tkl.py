@@ -126,5 +126,5 @@ if 'show_object' in locals():
     show_object(assy)
 
 # Export the whole assembly, very handy especially for STEP
-#exporters.export(assy.toCompound(), 'keycaps.stl', tolerance=0.001, angularTolerance=0.05)
-#exporters.export(assy.toCompound(), 'keycaps.step')
+exporters.export(assy.toCompound(), 'tkl.stl', tolerance=0.001, angularTolerance=0.05)
+exporters.export(assy.toCompound(), 'tkl.step')

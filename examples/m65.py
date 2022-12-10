@@ -70,9 +70,9 @@ keys = {
         { 't':'⇓','f':"DejaVu Sans Mono",'fs':12},
         { 't':'⎇','f':"/usr/share/fonts/truetype/NotoSansSymbols-Black.ttf" },
         { 't':'⇑','f':"DejaVu Sans Mono",'fs':12 },
-        { 'convex':True},
+        { 't':'','convex':True,'f':"/usr/share/fonts/texlive-fontawesome5/FontAwesome5Brands-Regular-400.otf",'fs':9},
         { 't':'','convex':True,'f':"/usr/share/fonts/texlive-fontawesome5/FontAwesome5Brands-Regular-400.otf",'fs':9},
-        { 'convex':True},
+        { 't':'','convex':True,'f':"/usr/share/fonts/texlive-fontawesome5/FontAwesome5Brands-Regular-400.otf",'fs':9},
         { 't':'⎇','f':"/usr/share/fonts/truetype/NotoSansSymbols-Black.ttf" },
         { 't':'⇧','fs':12 },
         { 't':'←','fs':12 },
@@ -109,5 +109,5 @@ if 'show_object' in locals():
     show_object(assy)
 
 # Export the whole assembly, very handy especially for STEP
-exporters.export(assy.toCompound(), 'keycaps.stl', tolerance=0.001, angularTolerance=0.05)
-#exporters.export(assy.toCompound(), 'keycaps.step')
+exporters.export(assy.toCompound(), 'm65.stl', tolerance=0.001, angularTolerance=0.05)
+exporters.export(assy.toCompound(), 'm65.step')
